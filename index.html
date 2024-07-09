@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <title>Tartály Szimulátor</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+
+    
+    <!-- menu start -->
+    <script src="menu.js"></script>
+    <link rel="stylesheet" type="text/css" href="navstyle.css">
+    <!-- menu end -->
+
+
+    <!-- download start -->
+    <script src="downloaddata.js"></script>
+    <!-- download end -->
+
+    <!-- sajatok -->
+    <script src="canvas.js"></script>
+    <script src="process.js"></script>
+    <script src="info.js"></script>
+    <!-- sajatok vege-->
+
+    <!-- letoltesbutton -->
+    <link rel="stylesheet" type="text/css" href="button.css">
+    <!-- letolesbutton vege-->
+
+    <!-- switchbutton -->
+    <link rel="stylesheet" type="text/css" href="switchbutton.css">
+    <!-- switchbutton vege-->
+
+    <!-- helpbutton -->
+    <link rel="stylesheet" type="text/css" href="helpbutton.css">
+    <script src="gethelp.js"></script>
+    <!-- helpbutton vege-->
+
+    <!-- language -->
+    <script defer src="language.js"></script>
+    <!-- language vege-->
+
+
+    <!-- Bootstrap CSS -->
+    <style>
+        input[type=range]{
+            width: 80%;
+            margin: 0.5rem auto
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+<nav style="position: fixed; overflow-x: hidden;" class="menu" tabindex="0">
+    <div class="smartphone-menu-trigger"></div>
+    <header class="avatar"></header>
+    
+    <ul>
+        <li style="text-align: center;" tabindex="0" class="icon-dashboard">
+            <span language="hu">Vízszint</span><span language="en">Water level</span>
+            <br>
+            <span id="z_info">0</span>
+            <span language="hu">méter</span><span language="en">meter</span>
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-dashboard">
+            <span language="hu">Belépő áram</span><span language="en">Flow in</span>
+            <br>
+            <span id="F1_info">0</span>
+            <span>m3/h</span>
+        </li>
+
+        <li style="text-align: center;" tabindex="0" class="icon-dashboard">
+            <span language="hu">Kilépő áram</span><span language="en">Flow out</span>
+            <br>
+            <span id="F2_info">0</span>
+            <span>m3/h</span>
+        </li>
+
+        <!-- ===============================================================-->
+        <hr style="border-width: 2px; margin: 0px;" />
+
+
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue">
+            <span language="hu">1. Szelepállás </span><span language="en">1. Valve Position </span>
+            <span id="sza1_output">0</span><span> %</span>
+            <br>
+            <input onchange="down('sza1')" onmouseup="up()" type="range" step="1" value=0 id="sza1_input" min="0" max="100">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue">
+            <span language="hu">2. Szelepállás </span><span language="en">2. Valve Position </span>
+            <span id="sza2_output">0</span><span> %</span>
+            <br>
+            <input onchange="down('sza2')" onmouseup="up()" type="range" step="1" value=0 id="sza2_input" min="0" max="100">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue">
+            <label>
+                <input onchange="switch_change()" id="switch_button" type="checkbox">
+            </label>
+            <br>
+            <span language="hu">Vízszint szab. </span><span language="en">Water level Regulation </span>
+            <br>
+            <span id="z_szab_output">3</span>
+            <span language="hu"> méter</span><span language="en"> meter</span>
+            <input onchange="down('z_szab')" type="range" id="z_szab_input" step="0.01" min="0" max="6">
+        </li>
+
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span language="hu">Szelep magasság </span><span language="en">Valve height </span>
+            <span id="H_output">5</span>
+            <span language="hu"> méter</span><span language="en"> meter</span>
+            <input onchange="down('H')" onmouseup="up()" type="range" step="0.1" value=5 id="H_input" min="0" max="5">
+        </li>
+        
+        <!-- ===============================================================-->
+        <hr style="border-width: 2px; margin: 0px;" />
+
+        <li style="text-align: center;" tabindex="0" >
+            <button language="hu"  class="button startstopsimbutton" onclick="startstopsim()">Indítás</button>
+            <button language="en"  class="button startstopsimbutton" onclick="startstopsim()">Start</button>
+        </li>
+        <li style="text-align: center;" tabindex="0" >
+            <button language="hu" class="button" onclick="download(HU_letoltes, 'Szimulátor.txt', 'text/plain')">Letöltés</button>
+            <button language="en" class="button" onclick="download(EN_letoltes, 'Simulator.txt', 'text/plain')">Download</button>
+        </li>
+
+        <!-- ===============================================================-->
+        <hr style="border-width: 2px; margin: 0px;" />
+
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span>CV1: </span><span id="cv1_output">2</span><br>
+            <input onchange="down('cv1')" onmouseup="up()" type="range" id="cv1_input" value="2" step="0.1" min="0" max="30">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span>CV2: </span><span id="cv2_output">10</span><br>
+            <input onchange="down('cv2')" onmouseup="up()" type="range" id="cv2_input" value="10" step="0.1" min="0" max="30">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span>KP: </span><span id="Kp_output">50</span><br>
+            <input onchange="down('Kp')" onmouseup="up()" style="color: black;" type="number" id="Kp_input" value="50" step="0.1" min="0" max="100">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span>KI: </span><span id="Ki_output">0.01</span><br>
+            <input onchange="down('Ki')" onmouseup="up()" style="color: black;" type="number" id="Ki_input" value=0.01 step="0.01" min="0" max="10">
+        </li>
+        <li style="text-align: center;" tabindex="0" class="icon-setvalue"><span>KD: </span><span id="Kd_output">0.01</span><br>
+            <input onchange="down('Kd')" onmouseup="up()" style="color: black;" type="number" id="Kd_input" value="0.01" step="0.01" min="0" max="10">
+        </li>
+
+    </ul>
+
+
+
+
+</nav>
+
+<main id="main">
+
+
+        <div id="canvasdiv" class="col-xs-10 col-sm-10">
+           
+            <canvas id="canvas" style="width: 100%;">
+
+            </canvas>
+
+        </div>
+
+    <div id="LanguageAndHelpDiv" style="position:fixed;right:0px;">
+        <div style="margin:auto; text-align: center;display:flex;align-items: center;justify-content: center;">
+            
+            <span language="hu" style="color:black; font-size: 2rem; font-weight: bold;white-space:pre;">Nyelv:  </span>
+            <span language="en" style="color:black; font-size: 2rem; font-weight: bold;white-space:pre;">Language:  </span>
+            
+            <img language="hu" style="height: 2rem;" src="Pictures/magyar.png">
+            <img language="en" style="height: 2rem;" src="Pictures/english.png">
+        </div>
+     
+        <div style="margin: auto;text-align: center;">
+            <label language="hu" style="color: black;" for="selectlanguage">Nyelv kiválasztása:</label>
+            <label language="en" style="color: black;" for="selectlanguage">Select language:</label>
+            
+            <select id="languageselect" style="width:90%; margin:auto" class="form-control" id="selectlanguage">
+              <option value="magyar" >Magyar</option>
+              <option value="english" >English</option>
+            </select>
+        </div>
+      
+        <div style="margin:auto; text-align: center;display:flex;align-items: center;justify-content: center;">
+            <button language="hu" class="help-button" onclick="window.open('help.html', '_blank')">Segítség</button>
+            <button language="en" class="help-button" onclick="window.open('help.html', '_blank')">Help</button>
+        
+        </div>
+        
+    </div>
+
+
+
+</main>
+<script>
+
+    $("#canvas").outerHeight($(window).height()-$("#canvas").offset().top- Math.abs($("#canvas").outerHeight(true) - $("#canvas").outerHeight())-10);
+    $(window).on("resize", function(){         				$("#canvas").outerHeight($(window).height()-$("#canvas").offset().top- Math.abs($("#canvas").outerHeight(true) - $("#canvas").outerHeight())-10);
+    });
+
+    //sajat:
+    $('#LanguageAndHelpDiv')[0].style.width = String($('#main')[0].offsetWidth - $('#canvasdiv')[0].offsetWidth) + 'px'
+
+</script>
+</body>
+
+</html>

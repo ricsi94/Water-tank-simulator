@@ -1,0 +1,22 @@
+.help-button {
+    margin: 1rem auto;
+    right: 26px;
+    bottom: 20px;
+
+    padding: 0.75em 1.5em;
+    text-align: center;
+    color: black;
+
+    transition-duration: 0.5s;
+    font-weight: bold;
+    border: 3px solid darkgreen;
+    border-radius: 10%;
+    background-color: lightgreen;
+    font-size: 1.5em;
+
+}
+
+.help-button:hover {
+    background-color: white;
+    transform: scale(1.05);
+}
